@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "goit-web-hw-05"
+version = "0.1.0"
+description = ""
+authors = ["ink404dot <94466285+ink404dot@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+aiohttp = "^3.11.9"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
