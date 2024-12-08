@@ -1,27 +1,49 @@
 import argparse
 import platform
-import aiohttp
 import asyncio
 import json
 from datetime import datetime, timedelta
 from typing import List, Dict, Any
+import time
+
+import aiohttp
+from aiolimiter import AsyncLimiter
+
 
 class HttpError(Exception):
     pass
 
+class AsyncTimer:
+    @staticmethod
+    def measure_time(func):
+        """
+        Decorator to measure the execution time of an asynchronous function.
+        """
+        async def wrapper(*args, **kwargs) -> Any:
+            start_time = time.perf_counter()
+            result = await func(*args, **kwargs)  # Await the coroutine
+            end_time = time.perf_counter()
+            elapsed_time = end_time - start_time
+            print(f"Execution time for {func.__name__}: {elapsed_time:.2f} seconds")
+            return result  # Return the awaited result
+        return wrapper
 
 class ExchangeRateAPI:
     BASE_URL = "https://api.privatbank.ua/p24api/exchange_rates"
+    limiter = AsyncLimiter(max_rate=2, time_period=10)
+    
+    @AsyncTimer.measure_time
     @staticmethod
     async def fetch_exchange_rate(date: str, session: aiohttp.ClientSession) -> Dict[str, Any]:
         url = f"{ExchangeRateAPI.BASE_URL}?date={date}"
-        try:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    return await response.json()
-                raise HttpError(f"Error status: {response.status} for {url}")
-        except (aiohttp.ClientConnectorError, aiohttp.InvalidURL) as err:
-            raise HttpError(f"Connection error for {url}: {str(err)}")
+        async with ExchangeRateAPI.limiter:
+            try:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    raise HttpError(f"Error status: {response.status} for {url}")
+            except (aiohttp.ClientConnectorError, aiohttp.InvalidURL) as err:
+                raise HttpError(f"Connection error for {url}: {str(err)}")
 
     @staticmethod
     async def fetch_all_rates(shift: int, currencies: List[str]) -> List[Dict[str, Dict]]:

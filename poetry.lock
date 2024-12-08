@@ -109,6 +109,17 @@ yarl = ">=1.17.0,<2.0"
 speedups = ["Brotli", "aiodns (>=3.2.0)", "brotlicffi"]
 
 [[package]]
+name = "aiolimiter"
+version = "1.2.1"
+description = "asyncio rate limiter, a leaky bucket implementation"
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "aiolimiter-1.2.1-py3-none-any.whl", hash = "sha256:d3f249e9059a20badcb56b61601a83556133655c11d1eb3dd3e04ff069e5f3c7"},
+    {file = "aiolimiter-1.2.1.tar.gz", hash = "sha256:e02a37ea1a855d9e832252a105420ad4d15011505512a1a1d814647451b5cca9"},
+]
+
+[[package]]
 name = "aiosignal"
 version = "1.3.1"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -547,4 +558,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "f0341d5adb301e1b12c22bcbd4e9312a0dbd494be2f80a2d704072ad7592f629"
+content-hash = "b31bfdb5fbc787bfcdfbdbf0f634bcc848baac8d34837a80656a92087ad5d3af"
